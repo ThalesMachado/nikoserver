@@ -3,14 +3,24 @@ var port = process.env.PORT || 3000;
 
 var app = express();
 
+var mysql = require('mysql');
+
+var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'niko',
+    password: '123456',
+    database: 'nikoserver'
+})
+
+
 
 app.get('/', (req, res) => {
-    let response = {"Nome": "Thales",
-    "Sobrenome": "Machado",
-    "Idade": 23,
-    "Cidade Natal": "Itaboraí",
-    "Data de Nascimento": "20/11/1995"}
-    res.send(response);
+    connection.connect();
+    connection.query('SELECT * FROM USER', (err, rows, fields) => {
+        if (err) throw err;
+        res.send(rows);
+    });
+    connection.end();
 });
 
 app.listen(port, () => {
